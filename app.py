@@ -19,13 +19,11 @@ def load_wardrobe():
 
 
 def save_wardrobe():
-    DATA_FILE.write_text(
-        json.dumps(st.session_state.wardrobe, indent=2)
-    )
+    pass
 
 
 if "wardrobe" not in st.session_state:
-    st.session_state.wardrobe = load_wardrobe()
+    st.session_state.wardrobe = []
 
 
 st.title("My Digital Wardrobe")
@@ -57,15 +55,13 @@ if clothing_image is not None:
 
 if st.button("Add to Wardrobe"):
     if clothing_name.strip() and clothing_image is not None:
-        extension = Path(clothing_image.name).suffix.lower()
-        image_path = IMAGE_FOLDER / f"{uuid.uuid4().hex}{extension}"
-        image_path.write_bytes(clothing_image.getvalue())
+        image_data = clothing_image.getvalue()
 
         item = {
             "name": clothing_name.strip(),
             "category": category,
             "style": style,
-            "image": str(image_path)
+            "image": image_data
         }
 
         st.session_state.wardrobe.append(item)
@@ -86,8 +82,7 @@ else:
 
     for index, item in enumerate(st.session_state.wardrobe):
         with columns[index % 3]:
-            if Path(item["image"]).exists():
-                st.image(item["image"], width="stretch")
+            st.image(item["image"], width="stretch")
             st.write(item["name"])
             st.caption(item["category"])
 
